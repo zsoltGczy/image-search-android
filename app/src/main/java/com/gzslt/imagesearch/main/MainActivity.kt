@@ -1,7 +1,8 @@
-package com.gzslt.imagesearch
+package com.gzslt.imagesearch.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.gzslt.imagesearch.R
 
 class MainActivity : AppCompatActivity() {
 
