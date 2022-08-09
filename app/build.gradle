@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -37,12 +39,18 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes true
+}
+
 dependencies {
+    kapt "com.google.dagger:hilt-compiler:$rootProject.daggerVersion"
 
     implementation "androidx.appcompat:appcompat:$rootProject.supportLibraryVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     implementation "androidx.core:core-ktx:$rootProject.coreVersion"
     implementation "com.google.android.material:material:$rootProject.materialVersion"
+    implementation "com.google.dagger:hilt-android:$rootProject.daggerVersion"
     implementation "com.squareup.logcat:logcat:$rootProject.logcatVersion"
 
     ktlint "com.pinterest:ktlint:$rootProject.ktlintVersion"
