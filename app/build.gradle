@@ -31,6 +31,10 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+
+    configurations {
+        ktlint
+    }
 }
 
 dependencies {
@@ -40,7 +44,24 @@ dependencies {
     implementation "androidx.core:core-ktx:$rootProject.coreVersion"
     implementation "com.google.android.material:material:$rootProject.materialVersion"
 
+    ktlint "com.pinterest:ktlint:$rootProject.ktlintVersion"
+
     testImplementation "junit:junit:$rootProject.jUnitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoVersion"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.extjUnitVersion"
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    args "src/**/*.kt", "--reporter=checkstyle,output=${buildDir}/reports/ktlint.xml"
+}
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    args "-F", "src/**/*.kt", "--reporter=checkstyle,output=${buildDir}/reports/ktlint.xml"
 }
