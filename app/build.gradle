@@ -21,6 +21,15 @@ android {
 
         buildConfigField "String", "BASE_URL", doubleQuotes("https://www.flickr.com/services/rest/")
         buildConfigField "String", "FLICKR_API_KEY", doubleQuotes(FLICKR_API_KEY)
+
+        buildConfigField "int", "DATABASE_VERSION", '1'
+        buildConfigField "String", "DATABASE_NAME", doubleQuotes("default")
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas".toString())
+            }
+        }
     }
 
     buildTypes {
@@ -53,12 +62,15 @@ kapt {
 }
 
 dependencies {
+    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
     kapt "com.google.dagger:hilt-compiler:$rootProject.daggerVersion"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$rootProject.moshiVersion"
 
     implementation "androidx.appcompat:appcompat:$rootProject.supportLibraryVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     implementation "androidx.core:core-ktx:$rootProject.coreVersion"
+    implementation "androidx.room:room-ktx:$rootProject.roomVersion"
+    implementation "androidx.room:room-runtime:$rootProject.roomVersion"
     implementation "com.google.android.material:material:$rootProject.materialVersion"
     implementation "com.google.dagger:hilt-android:$rootProject.daggerVersion"
     implementation "com.squareup.logcat:logcat:$rootProject.logcatVersion"
