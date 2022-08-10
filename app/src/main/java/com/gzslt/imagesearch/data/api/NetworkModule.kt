@@ -1,6 +1,7 @@
 package com.gzslt.imagesearch.data.api
 
 import com.gzslt.imagesearch.BuildConfig
+import com.gzslt.imagesearch.data.api.interceptor.CommonQueryParameterInterceptor
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -39,9 +40,11 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(
+        commonQueryParameterInterceptor: CommonQueryParameterInterceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient =
         OkHttpClient.Builder()
+            .addInterceptor(commonQueryParameterInterceptor)
             .addInterceptor(httpLoggingInterceptor)
             .build()
 
