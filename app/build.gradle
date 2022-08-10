@@ -5,6 +5,8 @@ plugins {
     id 'dagger.hilt.android.plugin'
 }
 
+apply from: 'utils.gradle'
+
 android {
     compileSdk rootProject.compileSdkVersion
 
@@ -16,6 +18,9 @@ android {
         versionName rootProject.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "BASE_URL", doubleQuotes("https://www.flickr.com/services/rest/")
+        buildConfigField "String", "FLICKR_API_KEY", doubleQuotes(FLICKR_API_KEY)
     }
 
     buildTypes {
@@ -49,6 +54,7 @@ kapt {
 
 dependencies {
     kapt "com.google.dagger:hilt-compiler:$rootProject.daggerVersion"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$rootProject.moshiVersion"
 
     implementation "androidx.appcompat:appcompat:$rootProject.supportLibraryVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
@@ -56,6 +62,11 @@ dependencies {
     implementation "com.google.android.material:material:$rootProject.materialVersion"
     implementation "com.google.dagger:hilt-android:$rootProject.daggerVersion"
     implementation "com.squareup.logcat:logcat:$rootProject.logcatVersion"
+    implementation "com.squareup.moshi:moshi-kotlin:$rootProject.moshiVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okHttpVersion"
+    implementation "com.squareup.okhttp3:okhttp:$rootProject.okHttpVersion"
+    implementation "com.squareup.retrofit2:converter-moshi:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
 
     ktlint "com.pinterest:ktlint:$rootProject.ktlintVersion"
 

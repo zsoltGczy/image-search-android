@@ -23,6 +23,9 @@ buildscript {
         ktlintVersion = '0.43.2'
         logcatVersion = '0.1'
         materialVersion = '1.6.1'
+        moshiVersion = '1.13.0'
+        okHttpVersion = '4.9.3'
+        retrofitVersion = '2.9.0'
         supportLibraryVersion = '1.4.2'
     }
 
