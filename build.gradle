@@ -21,6 +21,7 @@ buildscript {
         jUnitVersion = '4.13.2'
         kotlinVersion = '1.6.10'
         ktlintVersion = '0.43.2'
+        lifecycleComponentsVersion = '2.5.1'
         logcatVersion = '0.1'
         materialVersion = '1.6.1'
         moshiVersion = '1.13.0'
