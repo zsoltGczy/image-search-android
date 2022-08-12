@@ -18,4 +18,7 @@
     <dimen name="text_size_xxxlarge">56sp</dimen>
 
     <dimen name="text_input_layout_corner_radius">24dp</dimen>
+
+    <dimen name="image_list_item_corner_radius">16dp</dimen>
+    <dimen name="image_list_item_elevation">8dp</dimen>
 </resources>

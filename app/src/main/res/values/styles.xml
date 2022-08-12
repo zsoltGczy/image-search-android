@@ -8,4 +8,9 @@
         <item name="boxCornerRadiusTopEnd">@dimen/text_input_layout_corner_radius</item>
     </style>
 
+    <style name="ImageListItemCard" parent="">
+        <item name="cardCornerRadius">@dimen/image_list_item_corner_radius</item>
+        <item name="elevation">@dimen/image_list_item_elevation</item>
+    </style>
+
 </resources>
