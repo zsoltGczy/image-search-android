@@ -6,18 +6,25 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.gzslt.imagesearch.R
+import com.gzslt.imagesearch.common.ui.adapter.BindableBaseRecyclerViewAdapter
 import com.gzslt.imagesearch.databinding.ViewImageListItemBinding
+import com.gzslt.imagesearch.main.imagelist.adapter.ImageListAdapter
+import com.gzslt.imagesearch.main.imagelist.model.ImageListItemUiModel
 
-class ImageListItemView : FrameLayout {
+class ImageListItemView :
+    FrameLayout,
+    BindableBaseRecyclerViewAdapter.Bindable<ImageListItemUiModel> {
 
     private val binding = ViewImageListItemBinding.inflate(LayoutInflater.from(context), this)
+
+    var onItemClickListener: ImageListAdapter.OnItemClickListener? = null
 
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) :
-            super(context, attrs, defStyleAttr)
+        super(context, attrs, defStyleAttr)
 
     init {
         layoutParams = LayoutParams(
@@ -29,5 +36,9 @@ class ImageListItemView : FrameLayout {
         setPadding(
             padding, padding, padding, padding,
         )
+    }
+
+    override fun bind(model: ImageListItemUiModel) {
+        TODO("Not yet implemented")
     }
 }
