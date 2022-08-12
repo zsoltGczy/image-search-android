@@ -25,6 +25,7 @@ buildscript {
         logcatVersion = '0.1'
         materialVersion = '1.6.1'
         moshiVersion = '1.13.0'
+        navigationVersion = '2.5.1'
         okHttpVersion = '4.9.3'
         pagingVersion = '3.1.1'
         retrofitVersion = '2.9.0'

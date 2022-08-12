@@ -73,6 +73,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$rootProject.lifecycleComponentsVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleComponentsVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$rootProject.lifecycleComponentsVersion"
+    implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navigationVersion"
     implementation "androidx.paging:paging-runtime:$rootProject.pagingVersion"
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
     implementation "androidx.room:room-paging:$rootProject.roomVersion"
