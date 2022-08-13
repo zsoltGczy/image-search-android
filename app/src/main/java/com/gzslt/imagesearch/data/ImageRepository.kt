@@ -23,7 +23,6 @@ class ImageRepository @Inject constructor(
             config = PagingConfig(
                 initialLoadSize = NETWORK_PAGE_SIZE,
                 pageSize = NETWORK_PAGE_SIZE,
-                enablePlaceholders = false
             ),
             remoteMediator = ImageRemoteMediator(query, apiClient, appDatabase),
         ) {
