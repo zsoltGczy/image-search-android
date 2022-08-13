@@ -53,8 +53,7 @@ class ImageRemoteMediator(
             val endOfPaginationReached = imageListApiModel.imageList.isEmpty()
             appDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    appDatabase.remoteKeyDao().clearRemoteKeys()
-                    appDatabase.imageDao().deleteImages()
+                    appDatabase.clearAllTables()
                 }
                 val prevKey = if (page == FLICKR_STARTING_PAGE_INDEX) null else page - 1
                 val nextKey = if (endOfPaginationReached) null else page + 1
