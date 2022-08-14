@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="SearchTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusBottomStart">@dimen/text_input_layout_corner_radius</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/text_input_layout_corner_radius</item>
+        <item name="boxCornerRadiusTopStart">@dimen/text_input_layout_corner_radius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/text_input_layout_corner_radius</item>
+    </style>
+
+    <style name="ImageListItemCard" parent="">
+        <item name="cardCornerRadius">@dimen/image_list_item_corner_radius</item>
+        <item name="elevation">@dimen/image_list_item_elevation</item>
+    </style>
+
+</resources>
