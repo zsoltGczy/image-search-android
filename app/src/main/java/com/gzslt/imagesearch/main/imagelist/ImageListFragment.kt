@@ -17,6 +17,7 @@ import com.gzslt.imagesearch.R
 import com.gzslt.imagesearch.databinding.FragmentImageListBinding
 import com.gzslt.imagesearch.main.BaseFragment
 import com.gzslt.imagesearch.main.imagelist.adapter.ImageListAdapter
+import com.gzslt.imagesearch.main.imagelist.adapter.ImageLoadStateAdapter
 import com.gzslt.imagesearch.main.imagelist.model.ImageListItemUiModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
@@ -71,9 +72,22 @@ class ImageListFragment : BaseFragment() {
             }
         }
 
+        val footer = ImageLoadStateAdapter { imageListAdapter.retry() }
+        val adapterWithFooter = imageListAdapter.withLoadStateFooter(
+            footer = footer
+        )
+
         with(binding.imageListRecyclerView) {
-            layoutManager = GridLayoutManager(getMainActivity(), 2)
-            adapter = imageListAdapter
+            layoutManager = GridLayoutManager(getMainActivity(), 2).apply {
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int =
+                        if (imageListAdapter.getItemViewType(position) == imageListAdapter.ERROR_VIEW_TYPE)
+                            1
+                        else
+                            2
+                }
+            }
+            adapter = adapterWithFooter
         }
 
         bindSearch(
@@ -83,6 +97,7 @@ class ImageListFragment : BaseFragment() {
 
         bindList(
             pagingData = pagingData,
+            footer = footer,
         )
     }
 
@@ -127,6 +142,7 @@ class ImageListFragment : BaseFragment() {
     }
 
     private fun bindList(
+        footer: ImageLoadStateAdapter,
         pagingData: Flow<PagingData<ImageListItemUiModel>>,
     ) {
         lifecycleScope.launch {
@@ -135,14 +151,20 @@ class ImageListFragment : BaseFragment() {
 
         lifecycleScope.launch {
             imageListAdapter.loadStateFlow.collect { loadState ->
+                footer.loadState = loadState.mediator
+                    ?.refresh
+                    ?.takeIf { it is LoadState.Error && imageListAdapter.itemCount > 0 }
+                    ?: loadState.append
+
                 val errorState = loadState.source.append as? LoadState.Error
                     ?: loadState.source.prepend as? LoadState.Error
                     ?: loadState.append as? LoadState.Error
                     ?: loadState.prepend as? LoadState.Error
+
                 errorState?.let {
                     Toast.makeText(
                         getMainActivity(),
-                        getString(R.string.error_load_state_error_toast, it.error),
+                        getString(R.string.image_list_error_load_state_error, it.error),
                         Toast.LENGTH_LONG
                     ).show()
                 }

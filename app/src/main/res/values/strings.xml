@@ -2,6 +2,6 @@
     <string name="app_name">Image Search</string>
 
     <string name="image_list_search_hint">Search</string>
-
-    <string name="error_load_state_error_toast">😨 Error %1$s</string>
+    <string name="image_list_retry_button">Retry</string>
+    <string name="image_list_error_load_state_error">😨 Error %1$s</string>
 </resources>
