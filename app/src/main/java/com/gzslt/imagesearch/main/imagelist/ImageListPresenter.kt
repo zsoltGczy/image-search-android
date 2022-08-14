@@ -20,4 +20,6 @@ class ImageListPresenter @Inject constructor(
                     tuple.toUiModel()
                 }
             }
+
+    fun getSavedQueryOrDefault() = imageRepository.getSavedQueryOrDefault()
 }
