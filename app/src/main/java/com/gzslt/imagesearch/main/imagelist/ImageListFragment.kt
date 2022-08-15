@@ -16,6 +16,9 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.gzslt.imagesearch.R
+import com.gzslt.imagesearch.common.extension.isError
+import com.gzslt.imagesearch.common.extension.isLoading
+import com.gzslt.imagesearch.common.extension.isNotLoading
 import com.gzslt.imagesearch.databinding.FragmentImageListBinding
 import com.gzslt.imagesearch.main.BaseFragment
 import com.gzslt.imagesearch.main.imagelist.adapter.ImageListAdapter
@@ -75,22 +78,6 @@ class ImageListFragment : BaseFragment() {
         }
 
         val footer = ImageLoadStateAdapter { imageListAdapter.retry() }
-        val adapterWithFooter = imageListAdapter.withLoadStateFooter(
-            footer = footer
-        )
-
-        with(binding.imageListRecyclerView) {
-            layoutManager = GridLayoutManager(getMainActivity(), 2).apply {
-                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                    override fun getSpanSize(position: Int): Int =
-                        if (imageListAdapter.getItemViewType(position) == imageListAdapter.ERROR_VIEW_TYPE)
-                            1
-                        else
-                            2
-                }
-            }
-            adapter = adapterWithFooter
-        }
 
         bindSearch(
             uiState = uiState,
@@ -147,6 +134,8 @@ class ImageListFragment : BaseFragment() {
         footer: ImageLoadStateAdapter,
         pagingData: Flow<PagingData<ImageListItemUiModel>>,
     ) {
+        setUpRecyclerView(footer)
+
         lifecycleScope.launch {
             pagingData.collectLatest(imageListAdapter::submitData)
         }
@@ -176,29 +165,45 @@ class ImageListFragment : BaseFragment() {
         }
     }
 
+    private fun setUpRecyclerView(footer: ImageLoadStateAdapter) {
+        with(binding.imageListRecyclerView) {
+            layoutManager = GridLayoutManager(getMainActivity(), 2).apply {
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int =
+                        if (imageListAdapter.getItemViewType(position) == imageListAdapter.ERROR_VIEW_TYPE)
+                            1
+                        else
+                            2
+                }
+            }
+            adapter = imageListAdapter.withLoadStateFooter(
+                footer = footer
+            )
+        }
+    }
+
     private fun showScreenByLoadState(loadState: CombinedLoadStates) {
         val loadStateMediatorRefresh = loadState.mediator?.refresh
         val loadStateSourceRefresh = loadState.source.refresh
 
         with(binding) {
             imageListRecyclerView.isVisible =
-                loadStateSourceRefresh is LoadState.NotLoading ||
-                        loadStateMediatorRefresh is LoadState.NotLoading
+                loadStateSourceRefresh.isNotLoading() || loadStateMediatorRefresh.isNotLoading()
 
-            progressBar.isVisible = loadStateMediatorRefresh is LoadState.Loading
+            progressBar.isVisible = loadStateMediatorRefresh.isLoading()
 
             // TODO refactor
             retryLayout.isVisible =
-                loadStateMediatorRefresh is LoadState.Error && imageListAdapter.itemCount == 0
+                loadStateMediatorRefresh.isError() && imageListAdapter.itemCount == 0
             if (loadStateMediatorRefresh is LoadState.Error) {
                 errorMessageTextView.text = loadStateMediatorRefresh.error.message
                 retryButton.setOnClickListener { imageListAdapter.retry() }
             }
 
             emptyList.isVisible =
-                loadStateMediatorRefresh is LoadState.NotLoading &&
-                        loadStateSourceRefresh is LoadState.NotLoading &&
-                        imageListAdapter.itemCount == 0
+                loadStateMediatorRefresh.isNotLoading() &&
+                loadStateSourceRefresh.isNotLoading() &&
+                imageListAdapter.itemCount == 0
         }
     }
 }
