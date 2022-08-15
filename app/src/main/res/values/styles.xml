@@ -13,4 +13,12 @@
         <item name="elevation">@dimen/image_list_item_elevation</item>
     </style>
 
+    <style name="ErrorMessage">
+        <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
+
+    <style name="LoadStateFooterItemViewErrorMessage">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+    </style>
+
 </resources>

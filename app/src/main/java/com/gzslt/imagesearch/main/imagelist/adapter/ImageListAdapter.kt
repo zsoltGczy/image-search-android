@@ -12,6 +12,16 @@ class ImageListAdapter(private val context: Context) :
 
     var onItemClickListener: OnItemClickListener? = null
 
+    val IMAGE_VIEW_TYPE = 0
+    val ERROR_VIEW_TYPE = 1
+
+    override fun getItemViewType(position: Int): Int =
+        if (position == itemCount) {
+            IMAGE_VIEW_TYPE
+        } else {
+            ERROR_VIEW_TYPE
+        }
+
     override fun onCreateItemView(parent: ViewGroup, viewType: Int): ImageListItemView =
         ImageListItemView(context)
 

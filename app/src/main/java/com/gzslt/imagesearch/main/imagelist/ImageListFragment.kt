@@ -8,15 +8,21 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.gzslt.imagesearch.R
+import com.gzslt.imagesearch.common.extension.isError
+import com.gzslt.imagesearch.common.extension.isLoading
+import com.gzslt.imagesearch.common.extension.isNotLoading
 import com.gzslt.imagesearch.databinding.FragmentImageListBinding
 import com.gzslt.imagesearch.main.BaseFragment
 import com.gzslt.imagesearch.main.imagelist.adapter.ImageListAdapter
+import com.gzslt.imagesearch.main.imagelist.adapter.ImageLoadStateAdapter
 import com.gzslt.imagesearch.main.imagelist.model.ImageListItemUiModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
@@ -71,10 +77,7 @@ class ImageListFragment : BaseFragment() {
             }
         }
 
-        with(binding.imageListRecyclerView) {
-            layoutManager = GridLayoutManager(getMainActivity(), 2)
-            adapter = imageListAdapter
-        }
+        val footer = ImageLoadStateAdapter { imageListAdapter.retry() }
 
         bindSearch(
             uiState = uiState,
@@ -83,6 +86,7 @@ class ImageListFragment : BaseFragment() {
 
         bindList(
             pagingData = pagingData,
+            footer = footer,
         )
     }
 
@@ -127,26 +131,79 @@ class ImageListFragment : BaseFragment() {
     }
 
     private fun bindList(
+        footer: ImageLoadStateAdapter,
         pagingData: Flow<PagingData<ImageListItemUiModel>>,
     ) {
+        setUpRecyclerView(footer)
+
         lifecycleScope.launch {
             pagingData.collectLatest(imageListAdapter::submitData)
         }
 
         lifecycleScope.launch {
             imageListAdapter.loadStateFlow.collect { loadState ->
+                showScreenByLoadState(loadState)
+
+                footer.loadState = loadState.mediator
+                    ?.refresh
+                    ?.takeIf { it is LoadState.Error && imageListAdapter.itemCount > 0 }
+                    ?: loadState.append
+
                 val errorState = loadState.source.append as? LoadState.Error
                     ?: loadState.source.prepend as? LoadState.Error
                     ?: loadState.append as? LoadState.Error
                     ?: loadState.prepend as? LoadState.Error
+
                 errorState?.let {
                     Toast.makeText(
                         getMainActivity(),
-                        getString(R.string.error_load_state_error_toast, it.error),
+                        getString(R.string.image_list_error_load_state_error, it.error),
                         Toast.LENGTH_LONG
                     ).show()
                 }
             }
+        }
+    }
+
+    private fun setUpRecyclerView(footer: ImageLoadStateAdapter) {
+        with(binding.imageListRecyclerView) {
+            layoutManager = GridLayoutManager(getMainActivity(), 2).apply {
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int =
+                        if (imageListAdapter.getItemViewType(position) == imageListAdapter.ERROR_VIEW_TYPE)
+                            1
+                        else
+                            2
+                }
+            }
+            adapter = imageListAdapter.withLoadStateFooter(
+                footer = footer
+            )
+        }
+    }
+
+    private fun showScreenByLoadState(loadState: CombinedLoadStates) {
+        val loadStateMediatorRefresh = loadState.mediator?.refresh
+        val loadStateSourceRefresh = loadState.source.refresh
+
+        with(binding) {
+            imageListRecyclerView.isVisible =
+                loadStateSourceRefresh.isNotLoading() || loadStateMediatorRefresh.isNotLoading()
+
+            progressBar.isVisible = loadStateMediatorRefresh.isLoading()
+
+            // TODO refactor
+            retryLayout.isVisible =
+                loadStateMediatorRefresh.isError() && imageListAdapter.itemCount == 0
+            if (loadStateMediatorRefresh is LoadState.Error) {
+                errorMessageTextView.text = loadStateMediatorRefresh.error.message
+                retryButton.setOnClickListener { imageListAdapter.retry() }
+            }
+
+            emptyList.isVisible =
+                loadStateMediatorRefresh.isNotLoading() &&
+                loadStateSourceRefresh.isNotLoading() &&
+                imageListAdapter.itemCount == 0
         }
     }
 }
