@@ -21,4 +21,16 @@
         <item name="android:textSize">@dimen/text_size_medium</item>
     </style>
 
+    <style name="Title" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textColor">@color/secondaryDarkColor</item>
+    </style>
+
+    <style name="Description" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/primaryDarkColor</item>
+    </style>
+
+    <style name="Label" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textColor">@color/secondaryDarkColor</item>
+    </style>
+
 </resources>

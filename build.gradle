@@ -29,6 +29,7 @@ buildscript {
         navigationVersion = '2.5.1'
         okHttpVersion = '4.9.3'
         pagingVersion = '3.1.1'
+        photoViewVersion = '2.3.0'
         recyclerViewVersion = '1.2.1'
         retrofitVersion = '2.9.0'
         roomVersion = '2.4.3'
