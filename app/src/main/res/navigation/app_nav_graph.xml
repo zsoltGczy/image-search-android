@@ -9,6 +9,24 @@
         android:id="@+id/imageListFragment"
         android:name="com.gzslt.imagesearch.main.imagelist.ImageListFragment"
         android:label="ImageListFragment"
-        tools:layout="@layout/fragment_image_list" />
+        tools:layout="@layout/fragment_image_list">
+        <action
+            android:id="@+id/action_imageListFragment_to_imageDetailsFragment"
+            app:destination="@id/imageDetailsFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/imageDetailsFragment"
+        android:name="com.gzslt.imagesearch.main.imagedetails.ImageDetailsFragment"
+        android:label="ImageDetailsFragment"
+        tools:layout="@layout/fragment_image_details">
+        <argument
+            android:name="imageId"
+            app:argType="string" />
+    </fragment>
 
 </navigation>
