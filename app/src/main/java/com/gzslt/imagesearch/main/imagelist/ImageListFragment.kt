@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
@@ -151,6 +153,8 @@ class ImageListFragment : BaseFragment() {
 
         lifecycleScope.launch {
             imageListAdapter.loadStateFlow.collect { loadState ->
+                showScreenByLoadState(loadState)
+
                 footer.loadState = loadState.mediator
                     ?.refresh
                     ?.takeIf { it is LoadState.Error && imageListAdapter.itemCount > 0 }
@@ -169,6 +173,32 @@ class ImageListFragment : BaseFragment() {
                     ).show()
                 }
             }
+        }
+    }
+
+    private fun showScreenByLoadState(loadState: CombinedLoadStates) {
+        val loadStateMediatorRefresh = loadState.mediator?.refresh
+        val loadStateSourceRefresh = loadState.source.refresh
+
+        with(binding) {
+            imageListRecyclerView.isVisible =
+                loadStateSourceRefresh is LoadState.NotLoading ||
+                        loadStateMediatorRefresh is LoadState.NotLoading
+
+            progressBar.isVisible = loadStateMediatorRefresh is LoadState.Loading
+
+            // TODO refactor
+            retryLayout.isVisible =
+                loadStateMediatorRefresh is LoadState.Error && imageListAdapter.itemCount == 0
+            if (loadStateMediatorRefresh is LoadState.Error) {
+                errorMessageTextView.text = loadStateMediatorRefresh.error.message
+                retryButton.setOnClickListener { imageListAdapter.retry() }
+            }
+
+            emptyList.isVisible =
+                loadStateMediatorRefresh is LoadState.NotLoading &&
+                        loadStateSourceRefresh is LoadState.NotLoading &&
+                        imageListAdapter.itemCount == 0
         }
     }
 }

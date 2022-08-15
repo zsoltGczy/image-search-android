@@ -3,5 +3,6 @@
 
     <string name="image_list_search_hint">Search</string>
     <string name="image_list_retry_button">Retry</string>
+    <string name="image_list_error_no_results">No results 😓</string>
     <string name="image_list_error_load_state_error">😨 Error %1$s</string>
 </resources>
