@@ -114,7 +114,7 @@ class ImageDetailsFragment : BaseFragment() {
         isError: Boolean,
     ) {
         with(binding) {
-            // TODO Loading
+            progressBar.isVisible = isLoading
             successConstraintLayout.isVisible = isSuccess
             // TODO Error
         }
