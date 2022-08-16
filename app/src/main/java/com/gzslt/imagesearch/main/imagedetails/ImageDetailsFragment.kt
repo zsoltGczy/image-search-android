@@ -4,10 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.chip.Chip
+import com.gzslt.imagesearch.common.util.loadImageWithCrossFade
 import com.gzslt.imagesearch.databinding.FragmentImageDetailsBinding
 import com.gzslt.imagesearch.main.BaseFragment
+import com.gzslt.imagesearch.main.imagedetails.model.ImageDetailsUiModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ImageDetailsFragment : BaseFragment() {
@@ -26,14 +33,90 @@ class ImageDetailsFragment : BaseFragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getImageDetails()
+        initUi()
+    }
+
+    private fun initUi() {
+        lifecycleScope.launch {
+            viewModel.uiState.collectLatest { uiState ->
+                when (val state = uiState) {
+                    ImageDetailsUiState.Loading -> {
+                        setContentVisibilityByUiState(
+                            isLoading = true,
+                            isSuccess = false,
+                            isError = false,
+                        )
+                    }
+                    is ImageDetailsUiState.Success -> {
+                        setContentVisibilityByUiState(
+                            isLoading = false,
+                            isSuccess = true,
+                            isError = false,
+                        )
+
+                        setSuccessContent(state.model)
+                    }
+                    is ImageDetailsUiState.Error -> {
+                        setContentVisibilityByUiState(
+                            isLoading = false,
+                            isSuccess = false,
+                            isError = true,
+                        )
+
+                        setErrorContent(state.message)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setSuccessContent(model: ImageDetailsUiModel) {
+        with(binding) {
+            loadImageWithCrossFade(
+                getMainActivity(),
+                imagePhotoView,
+                model.imageUrl,
+            )
+            titleTextView.text = model.title
+            model.tags.let { tags ->
+                tagHorizontalScrollView.isVisible = tags.isNotEmpty()
+                if (tagHorizontalScrollView.isVisible) {
+                    tags.forEach { tagText ->
+                        tagChipGroup.addView(
+                            Chip(getMainActivity()).apply {
+                                text = tagText
+                            }
+                        )
+                    }
+                }
+            }
+            descriptionTextView.text = model.description
+            ownerNameTextView.text = model.ownerName
+            dateTextView.text = model.date
+        }
+    }
+
+    private fun setErrorContent(message: String) {
+        // TODO
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setContentVisibilityByUiState(
+        isLoading: Boolean,
+        isSuccess: Boolean,
+        isError: Boolean,
+    ) {
+        with(binding) {
+            // TODO Loading
+            successConstraintLayout.isVisible = isSuccess
+            // TODO Error
+        }
     }
 }
