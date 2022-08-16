@@ -1,18 +1,12 @@
 package com.gzslt.imagesearch.main.imagelist.view
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
-import com.bumptech.glide.request.target.BitmapImageViewTarget
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.gzslt.imagesearch.R
 import com.gzslt.imagesearch.common.ui.adapter.BindableBaseRecyclerViewAdapter
+import com.gzslt.imagesearch.common.util.loadImageWithCrossFade
 import com.gzslt.imagesearch.databinding.ViewImageListItemBinding
 import com.gzslt.imagesearch.main.imagelist.adapter.ImageListAdapter
 import com.gzslt.imagesearch.main.imagelist.model.ImageListItemUiModel
@@ -46,29 +40,11 @@ class ImageListItemView :
 
     override fun bind(model: ImageListItemUiModel) {
         with(binding.imageImageView) {
-            Glide.with(context)
-                .asBitmap()
-                .load(model.imageUrl)
-                .transition(BitmapTransitionOptions.withCrossFade())
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        transition?.let {
-                            val didSucceedTransition = transition.transition(
-                                resource,
-                                BitmapImageViewTarget(binding.imageImageView)
-                            )
-                            if (!didSucceedTransition)
-                                setImageBitmap(resource)
-                        }
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        setImageDrawable(placeholder)
-                    }
-                })
+            loadImageWithCrossFade(
+                context = context,
+                view = this,
+                imageUrl = model.imageUrl
+            )
 
             setOnClickListener {
                 onItemClickListener?.onItemClicked(model.imageId)
