@@ -52,7 +52,7 @@ class CommonQueryParameterInterceptor @Inject constructor() : Interceptor {
         private const val QUERY_PARAMETER_MEDIA_VALUE = "photos"
         private const val QUERY_PARAMETER_EXTRAS_KEY = "extras"
         private const val QUERY_PARAMETER_EXTRAS_VALUE =
-            "description%2C+date_taken%2C+tags%2C+owner_name"
+            "description,date_taken,tags,owner_name"
         private const val QUERY_PARAMETER_FORMAT_KEY = "format"
         private const val QUERY_PARAMETER_FORMAT_VALUE = "json"
         private const val QUERY_PARAMETER_NOJSONCALLBACK_KEY = "nojsoncallback"

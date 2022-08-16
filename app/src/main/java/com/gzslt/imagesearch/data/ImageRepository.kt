@@ -6,6 +6,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.gzslt.imagesearch.data.api.ApiClient
 import com.gzslt.imagesearch.data.db.AppDatabase
+import com.gzslt.imagesearch.data.db.tuple.ImageDetailsTuple
 import com.gzslt.imagesearch.data.db.tuple.ImageListItemTuple
 import com.gzslt.imagesearch.data.preferences.QueryPreferences
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,9 @@ class ImageRepository @Inject constructor(
         }.flow
 
     fun getSavedQueryOrDefault(): String = queryPreferences.getSavedQuery() ?: DEFAULT_QUERY_VALUE
+
+    suspend fun getImageDetailsByImageID(imageId: String): ImageDetailsTuple =
+        appDatabase.imageDao().getImageDetailsByImageId(imageId)
 
     companion object {
         private const val NETWORK_PAGE_SIZE = 20

@@ -29,6 +29,7 @@ buildscript {
         navigationVersion = '2.5.1'
         okHttpVersion = '4.9.3'
         pagingVersion = '3.1.1'
+        photoViewVersion = '2.3.0'
         recyclerViewVersion = '1.2.1'
         retrofitVersion = '2.9.0'
         roomVersion = '2.4.3'
@@ -44,6 +45,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:$gradleVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

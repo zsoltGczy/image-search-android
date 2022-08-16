@@ -24,11 +24,13 @@ import com.gzslt.imagesearch.main.BaseFragment
 import com.gzslt.imagesearch.main.imagelist.adapter.ImageListAdapter
 import com.gzslt.imagesearch.main.imagelist.adapter.ImageLoadStateAdapter
 import com.gzslt.imagesearch.main.imagelist.model.ImageListItemUiModel
+import com.gzslt.imagesearch.main.navigation.MainNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ImageListFragment : BaseFragment() {
@@ -39,6 +41,9 @@ class ImageListFragment : BaseFragment() {
     private val viewModel: ImageListViewModel by viewModels()
 
     private lateinit var imageListAdapter: ImageListAdapter
+
+    @Inject
+    lateinit var navigator: MainNavigator
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,7 +77,7 @@ class ImageListFragment : BaseFragment() {
         imageListAdapter = ImageListAdapter(getMainActivity()).apply {
             onItemClickListener = object : ImageListAdapter.OnItemClickListener {
                 override fun onItemClicked(imageId: String) {
-                    // TODO navigate to details screen
+                    navigator.navigateToDetails(imageId)
                 }
             }
         }
