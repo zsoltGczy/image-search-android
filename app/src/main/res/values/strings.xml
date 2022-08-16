@@ -5,4 +5,7 @@
     <string name="image_list_retry_button">Retry</string>
     <string name="image_list_error_no_results">No results 😓</string>
     <string name="image_list_error_load_state_error">😨 Error %1$s</string>
+
+    <string name="image_details_retry_button">Retry</string>
+    <string name="image_details_error_error_text">😨\n\nSome Error happened:\n\n%1$s </string>
 </resources>

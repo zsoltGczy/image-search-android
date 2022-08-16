@@ -34,7 +34,7 @@ class ImageDetailsViewModel @Inject constructor(
                         )
                     )
                 } catch (exception: Exception) {
-                    // TODO
+                    _uiState.emit(ImageDetailsUiState.Error(exception.message.toString()))
                 }
             }
         }

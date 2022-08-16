@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.chip.Chip
+import com.gzslt.imagesearch.R
 import com.gzslt.imagesearch.common.util.loadImageWithCrossFade
 import com.gzslt.imagesearch.databinding.FragmentImageDetailsBinding
 import com.gzslt.imagesearch.main.BaseFragment
@@ -71,6 +72,10 @@ class ImageDetailsFragment : BaseFragment() {
                 }
             }
         }
+
+        binding.retryButton.setOnClickListener {
+            viewModel.getImageDetails()
+        }
     }
 
     private fun setSuccessContent(model: ImageDetailsUiModel) {
@@ -100,7 +105,8 @@ class ImageDetailsFragment : BaseFragment() {
     }
 
     private fun setErrorContent(message: String) {
-        // TODO
+        binding.errorMessageTextView.text =
+            getString(R.string.image_details_error_error_text, message)
     }
 
     override fun onDestroyView() {
@@ -116,7 +122,7 @@ class ImageDetailsFragment : BaseFragment() {
         with(binding) {
             progressBar.isVisible = isLoading
             successConstraintLayout.isVisible = isSuccess
-            // TODO Error
+            errorLinearLayout.isVisible = isError
         }
     }
 }
