@@ -18,16 +18,20 @@ fun ImageDetailsTuple.toUiModel() =
             size = ImageSize.LARGE
         ),
         title = title.orEmpty(),
-        tags = tags.orEmpty().split(DELIMITER),
+        tags = tags.orEmpty().splitToTagListOrEmpty(),
         description = description.orEmpty(),
         ownerName = ownerName.orEmpty(),
         date = getDateString(date.orEmpty()),
     )
 
+private fun String.splitToTagListOrEmpty(): List<String> =
+    split(DELIMITER).let { if (it.size == 1 && it[0].isEmpty()) emptyList() else it }
+
 private fun getDateString(date: String): String =
     try {
-        SimpleDateFormat(DATE_PATTERN, Locale.US)
-            .parse(date)?.toString() ?: DATE_IS_MISSING
+        SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).parse(date)
+            ?.let { SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(it) }
+            ?: DATE_IS_MISSING
     } catch (exception: ParseException) {
         DATE_IS_MISSING
     }
