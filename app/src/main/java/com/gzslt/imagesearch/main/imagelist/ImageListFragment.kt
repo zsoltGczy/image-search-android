@@ -55,8 +55,9 @@ class ImageListFragment : BaseFragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+
+        super.onDestroyView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +66,7 @@ class ImageListFragment : BaseFragment() {
         initUi(
             uiState = viewModel.state,
             pagingData = viewModel.pagingDataFlow,
-            onQueryChanged = viewModel.searchEvent
+            onQueryChanged = viewModel::searchEvent,
         )
     }
 
@@ -116,10 +117,10 @@ class ImageListFragment : BaseFragment() {
 
     private fun updateImageListFromInput(onQueryChanged: (String) -> Unit) {
         with(binding) {
-            searchTextInputEditText.text.trim().let {
-                if (it.isNotEmpty()) {
+            searchTextInputEditText.text.trim().let { searchQuery ->
+                if (searchQuery.isNotEmpty()) {
                     imageListRecyclerView.scrollToPosition(0)
-                    onQueryChanged(it.toString())
+                    onQueryChanged(searchQuery.toString())
                 }
             }
         }
@@ -154,15 +155,17 @@ class ImageListFragment : BaseFragment() {
                     ?.takeIf { it is LoadState.Error && imageListAdapter.itemCount > 0 }
                     ?: loadState.append
 
-                val errorState = loadState.source.append as? LoadState.Error
-                    ?: loadState.source.prepend as? LoadState.Error
-                    ?: loadState.append as? LoadState.Error
-                    ?: loadState.prepend as? LoadState.Error
+                val errorState = listOf(
+                    loadState.source.append,
+                    loadState.source.prepend,
+                    loadState.append,
+                    loadState.prepend,
+                ).firstNotNullOfOrNull { it as? LoadState.Error }
 
-                errorState?.let {
+                errorState?.let { state ->
                     Toast.makeText(
                         getMainActivity(),
-                        getString(R.string.image_list_error_load_state_error, it.error),
+                        getString(R.string.image_list_error_load_state_error, state.error),
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -175,15 +178,13 @@ class ImageListFragment : BaseFragment() {
             layoutManager = GridLayoutManager(getMainActivity(), 2).apply {
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int =
-                        if (imageListAdapter.getItemViewType(position) == imageListAdapter.ERROR_VIEW_TYPE)
+                        if (imageListAdapter.getItemViewType(position) == ImageListAdapter.VIEW_TYPE_ERROR)
                             1
                         else
                             2
                 }
             }
-            adapter = imageListAdapter.withLoadStateFooter(
-                footer = footer
-            )
+            adapter = imageListAdapter.withLoadStateFooter(footer)
         }
     }
 
@@ -205,8 +206,7 @@ class ImageListFragment : BaseFragment() {
                 retryButton.setOnClickListener { imageListAdapter.retry() }
             }
 
-            emptyList.isVisible =
-                loadStateMediatorRefresh.isNotLoading() &&
+            emptyView.isVisible = loadStateMediatorRefresh.isNotLoading() &&
                 loadStateSourceRefresh.isNotLoading() &&
                 imageListAdapter.itemCount == 0
         }

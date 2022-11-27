@@ -12,14 +12,11 @@ class ImageListAdapter(private val context: Context) :
 
     var onItemClickListener: OnItemClickListener? = null
 
-    val IMAGE_VIEW_TYPE = 0
-    val ERROR_VIEW_TYPE = 1
-
     override fun getItemViewType(position: Int): Int =
         if (position == itemCount) {
-            IMAGE_VIEW_TYPE
+            VIEW_TYPE_IMAGE
         } else {
-            ERROR_VIEW_TYPE
+            VIEW_TYPE_ERROR
         }
 
     override fun onCreateItemView(parent: ViewGroup, viewType: Int): ImageListItemView =
@@ -33,5 +30,10 @@ class ImageListAdapter(private val context: Context) :
 
     interface OnItemClickListener {
         fun onItemClicked(imageId: String)
+    }
+
+    companion object {
+        const val VIEW_TYPE_IMAGE = 0
+        const val VIEW_TYPE_ERROR = 1
     }
 }
