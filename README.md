@@ -3,7 +3,7 @@
 Image Search is an Android project using [Flickr API](https://www.flickr.com/services/api/flickr.photos.search.html) based on MVVM architecture.
 The app gets and shows a list of images from the Flickr API, then it shows details when image items on the list are tapped.
 
-![Showcase](/docs/list_screen.jpg) ![Showcase](/docs/details_screen.jpg)
+![minipic](/docs/list_screen.png) ![minipic](/docs/detail_screen.png)
 
 ## Features
 - 100% Kotlin
@@ -11,7 +11,7 @@ The app gets and shows a list of images from the Flickr API, then it shows detai
 - Reactive pattern
 - Android Jetpack
 - Flow
-- Single activity app with fragments
+- Single Activity app with Fragments
 - Dependency injection
 
 ## Tech stack
