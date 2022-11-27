@@ -29,7 +29,7 @@ class ImageListItemView :
     init {
         layoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT,
-            LayoutParams.WRAP_CONTENT
+            LayoutParams.WRAP_CONTENT,
         )
 
         val padding = resources.getDimensionPixelSize(R.dimen.margin_padding_size_medium)
@@ -43,7 +43,7 @@ class ImageListItemView :
             loadImageWithCrossFade(
                 context = context,
                 view = this,
-                imageUrl = model.imageUrl
+                imageUrl = model.imageUrl,
             )
 
             setOnClickListener {

@@ -9,15 +9,13 @@ class ImageLoadStateAdapter(private val retry: () -> Unit) :
     LoadStateAdapter<LoadStateFooterItemViewHolder>() {
     override fun onBindViewHolder(
         holder: LoadStateFooterItemViewHolder,
-        loadState: LoadState
+        loadState: LoadState,
     ) {
         holder.bind(loadState)
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        loadState: LoadState
-    ): LoadStateFooterItemViewHolder {
-        return LoadStateFooterItemViewHolder.create(parent, retry)
-    }
+        loadState: LoadState,
+    ): LoadStateFooterItemViewHolder = LoadStateFooterItemViewHolder.create(parent, retry)
 }
