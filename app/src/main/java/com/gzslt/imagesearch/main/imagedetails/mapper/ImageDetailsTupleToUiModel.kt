@@ -4,6 +4,7 @@ import com.gzslt.imagesearch.common.util.ImageSize
 import com.gzslt.imagesearch.common.util.buildImageUrl
 import com.gzslt.imagesearch.data.db.tuple.ImageDetailsTuple
 import com.gzslt.imagesearch.main.imagedetails.model.ImageDetailsUiModel
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -16,20 +17,21 @@ fun ImageDetailsTuple.toUiModel() =
             secret = secret,
             size = ImageSize.LARGE
         ),
-        title = title,
-        tags = if (EMPTY_TAGS != tags) tags.split(DELIMITER) else emptyList(),
-        description = description,
-        ownerName = ownerName,
-        date = getDateString(date),
+        title = title.orEmpty(),
+        tags = tags.orEmpty().split(DELIMITER),
+        description = description.orEmpty(),
+        ownerName = ownerName.orEmpty(),
+        date = getDateString(date.orEmpty()),
     )
 
 private fun getDateString(date: String): String =
-    SimpleDateFormat(DATE_PATTERN, Locale.US)
-        .parse(date)
-        ?.toString()
-        ?: DATE_IS_MISSING
+    try {
+        SimpleDateFormat(DATE_PATTERN, Locale.US)
+            .parse(date)?.toString() ?: DATE_IS_MISSING
+    } catch (exception: ParseException) {
+        DATE_IS_MISSING
+    }
 
-private const val EMPTY_TAGS = ""
 private const val DELIMITER = " "
 private const val DATE_PATTERN = "yyyy-MM-dd"
 private const val DATE_IS_MISSING = "-"

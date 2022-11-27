@@ -81,9 +81,9 @@ class ImageDetailsFragment : BaseFragment() {
     private fun setSuccessContent(model: ImageDetailsUiModel) {
         with(binding) {
             loadImageWithCrossFade(
-                getMainActivity(),
-                imagePhotoView,
-                model.imageUrl,
+                context = getMainActivity(),
+                view = imagePhotoView,
+                imageUrl = model.imageUrl,
             )
             titleTextView.text = model.title
             model.tags.let { tags ->

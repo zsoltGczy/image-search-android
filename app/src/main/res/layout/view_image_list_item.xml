@@ -12,8 +12,9 @@
         <ImageView
             android:id="@+id/imageImageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/backgrounds/scenic" />
 
     </com.google.android.material.card.MaterialCardView>
 
